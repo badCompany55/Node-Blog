@@ -48,4 +48,15 @@ router.post("/", upperCaseName, async (req, res) => {
   }
 });
 
+router.put("/:id", upperCaseName, async (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  try {
+    const updatedUser = await users.update(id, body);
+    res.status(200).json(updatedUser);
+  } catch {
+    res.status(500).json({ error: "There was a problem updating the user" });
+  }
+});
+
 module.exports = router;
