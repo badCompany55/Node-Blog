@@ -6,7 +6,7 @@ const helm = require("helmet");
 const postRouter = require("./data/posts/post-router.js");
 const userRouter = require("./data/users/user-router.js");
 
-server.use(express.json(), logger("dev"), helm(), cors());
+server.use(express.json());
 server.use("/api/posts", postRouter);
 server.use("/api/users", userRouter);
 
