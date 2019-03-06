@@ -49,6 +49,7 @@ The `userDb.js` helper includes an extra method called `getUserPosts()` that whe
 
 The _Database Schemas_ for the `users` and `posts` resources are:
 
+
 ##### Users
 
 | field | data type        | metadata                                            |

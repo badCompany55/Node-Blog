@@ -3,8 +3,12 @@ const users = require("../helpers/userDb.js");
 const router = express.Router();
 
 function upperCaseName(req, res, next) {
-  name = req.body.name.toUpperCase();
-  req.body.name = name;
+  if (req.body.name) {
+    name = req.body.name.toUpperCase();
+    req.body.name = name;
+  } else {
+    res.status(400).json({ error: "Name is required" });
+  }
   next();
 }
 
@@ -20,21 +24,32 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const theUser = await users.getById(req.params.id);
-    res.status(200).json(theUser);
+    theUser
+      ? res.status(200).json(theUser)
+      : res.status(404).json({ message: "User not found" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: `The user with id ${req.params.id} does not exisit` });
+    res.status(500).json({ error: `Error retrieving user.` });
   }
 });
 
 router.get("/:id/posts", async (req, res) => {
   try {
-    const userPosts = await users.getUserPosts(req.params.id);
-    res.status(200).json(userPosts);
+    const theUser = await users.getById(req.params.id);
+    if (theUser) {
+      const userPosts = await users.getUserPosts(req.params.id);
+      if (userPosts) {
+        res.status(200).json(userPosts);
+      } else {
+        res
+          .status(404)
+          .json({ message: `${theUser.postedBy} does not have any posts` });
+      }
+    } else {
+      res.status(404).json({ error: "The user does not exist" });
+    }
   } catch {
     res.status(500).json({
-      error: `Failed to get posts for user with id of ${req.params.id}`
+      error: `Failed to retrieve user.`
     });
   }
 });
@@ -52,8 +67,19 @@ router.put("/:id", upperCaseName, async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
-    const updatedUser = await users.update(id, body);
-    res.status(200).json(updatedUser);
+    const user = await users.getById(id);
+    if (user) {
+      if (body.name) {
+        const updatedUser = await users.update(id, body);
+        res.status(200).json(updatedUser);
+      } else {
+        res.status(400).json({ error: "The name is required" });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ error: `The user with id: ${id}, does not exist` });
+    }
   } catch {
     res.status(500).json({ error: "There was a problem updating the user" });
   }
@@ -63,7 +89,9 @@ router.delete("/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const deletedUser = await users.remove(id);
-    res.status(200).json(deletedUser);
+    deletedUser === 1
+      ? res.status(200).json(deletedUser)
+      : res.status(400).json({ error: "The user doesn't exist" });
   } catch {
     res.status(500).json({ error: "Failed to delete user" });
   }
