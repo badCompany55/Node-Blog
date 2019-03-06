@@ -12,3 +12,14 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Unable to get the requested posts" });
   }
 });
+
+router.get("/:id", async (req, res) => {
+  try {
+    const singlePost = await posts.getById(req.params.id);
+    res.status(200).json(singlePost);
+  } catch {
+    res
+      .status(500)
+      .json({ error: `Unable to get post with the id of ${req.params.id}` });
+  }
+});
