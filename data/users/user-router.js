@@ -37,12 +37,13 @@ router.get("/:id/posts", async (req, res) => {
     const theUser = await users.getById(req.params.id);
     if (theUser) {
       const userPosts = await users.getUserPosts(req.params.id);
-      if (userPosts) {
+      if (userPosts.length > 0) {
         res.status(200).json(userPosts);
       } else {
+        console.log(theUser);
         res
           .status(404)
-          .json({ message: `${theUser.postedBy} does not have any posts` });
+          .json({ message: `${theUser.name} does not have any posts` });
       }
     } else {
       res.status(404).json({ error: "The user does not exist" });
