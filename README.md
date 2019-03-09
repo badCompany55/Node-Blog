@@ -49,6 +49,7 @@ The `userDb.js` helper includes an extra method called `getUserPosts()` that whe
 
 The _Database Schemas_ for the `users` and `posts` resources are:
 
+
 ##### Users
 
 | field | data type        | metadata                                            |
@@ -72,3 +73,6 @@ We have provided test data for the resources.
 - From the React application connect to the `/api/users` endpoint in the API and show the list of users.
 - Add functionality to show the details of a user, including their posts, when clicking a user name in the list. Use React Router to navigate to a `/users/:id` route to show the user details.
 - Add styling!
+
+
+## Added the Zach-Irvin Branch.
